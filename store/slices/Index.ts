@@ -2,11 +2,16 @@ import { stuntMen } from "@/dummy/doubles";
 import { StuntMan, StuntState } from "@/types/double";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import { fetchStuntMen } from "../asyncActions/Index";
 
 const initialState: StuntState = {
-  data: stuntMen,
+  // we can use the dummy data directly here
+  // but just to show the async thunk, we will use empty array
+  // here and then fetch the data using createAsyncThunk
+  data: [], // stuntMen,
   acceptedDoubles: [],
   rejectedDoubles: [],
+  loader: false,
 };
 
 export const counterSlice = createSlice({
@@ -34,6 +39,20 @@ export const counterSlice = createSlice({
       state.acceptedDoubles = [];
       state.rejectedDoubles = [];
     },
+  },
+  // The `extraReducers` field lets the slice handle actions defined elsewhere,
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchStuntMen.pending, (state, action) => {
+        state.loader = true;
+      })
+      .addCase(fetchStuntMen.fulfilled, (state, action) => {
+        state.data = action.payload;
+        state.loader = false;
+      })
+      .addCase(fetchStuntMen.rejected, (state, action) => {
+        state.loader = false;
+      });
   },
 });
 

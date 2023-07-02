@@ -7,4 +7,5 @@ export interface StuntState {
   data: StuntMan[];
   acceptedDoubles: StuntMan[];
   rejectedDoubles: StuntMan[];
+  loader: boolean;
 }

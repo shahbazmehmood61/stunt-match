@@ -1,6 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import stuntReducer from "./slices/Index";
 
+// to not lost the data on page refresh
+// we can use redux-persist
+
 export const store = configureStore({
   reducer: {
     stunt: stuntReducer,

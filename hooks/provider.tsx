@@ -1,26 +1,29 @@
 "use client";
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { AppContext } from "./context";
 import { contextProps } from "@/types/context";
 import { useAppDispatch, useAppSelector } from "./store";
 import { acceptDouble, rejectDouble, reset } from "@/store/slices/Index";
 
 const AppContextProvider = (props: { children: React.ReactElement }) => {
-  const { data } = useAppSelector((state) => state.stunt);
-  const [currentIndex, setCurrentIndex] = useState(data.length - 1);
+  const { data, loader } = useAppSelector((state) => state.stunt);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isReset, setIsReset] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useAppDispatch();
   // used for outOfFrame closure
   const currentIndexRef = useRef(currentIndex);
 
-  const childRefs: any = useMemo(
-    () =>
-      Array(data.length)
-        .fill(0)
-        .map((i) => React.createRef()),
-    [isReset]
-  );
+  useEffect(() => {
+    setCurrentIndex(data.length - 1);
+  }, [data]);
+
+  const childRefs: any = useMemo(() => {
+    if (loader) return [];
+    return Array(data.length)
+      .fill(0)
+      .map((i) => React.createRef());
+  }, [isReset, loader]);
 
   const updateCurrentIndex = (val: any) => {
     setCurrentIndex(val);
